@@ -8,7 +8,7 @@ export interface IApi {
     method?: ApiPostMethods
   ): Promise<T>;
 }
-type TPayment = "card" | "online" | "";
+export type TPayment = "card" | "online" | "";
 
 export interface IProduct {
   //уникальный id продукта

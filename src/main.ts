@@ -24,11 +24,18 @@ console.log("Стоимость всех товаров в корзине:", car
 cartModel.addItem(apiProducts.items[3]);
 console.log("Количество товаров в корзине:", cartModel.getTotalAmount());
 cartModel.clearCart();
+console.log("Осталось товаров в корзине после очищения:", cartModel.getItems());
 
 //Customer class
 import { Customer } from './components/models/customer';
+import { TPayment } from './types';
 const customerModel = new Customer();
+const data = {payment : "online" as TPayment, email: "test@mail.ru", phone: "12345678", address: "Примерная улица, дом 1"}
 customerModel.getAllCustomerData();
+customerModel.saveCustomerData(data);
+customerModel.getAllCustomerData();
+customerModel.validateCustomerData(data);
+customerModel.clearCustomerData();
 
 import { Api } from './components/base/Api';
 import { ApiService } from './components/models/apiService';

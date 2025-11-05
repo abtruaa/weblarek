@@ -3,6 +3,7 @@ export class Products {
     private allProducts: IProduct[] = [];
     //может быть null, если ни один товар не выбран
     private selectedProduct: IProduct | null = null;
+    
     //сохранения массива товаров полученного в параметрах метода
     public saveProducts(products: IProduct[]) : void {
         if (Array.isArray(products)) {

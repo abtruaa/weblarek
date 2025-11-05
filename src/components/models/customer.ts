@@ -23,7 +23,7 @@ export class Customer {
   //очистка данных покупателя
   public clearCustomerData(): void {
     this.customerData = null;
-    console.log("Данные покупателя удалены");
+    console.log("Данные покупателя удалены.");
   }
   //валидация данных покупателя
   public validateCustomerData(data: IBuyer): boolean {
