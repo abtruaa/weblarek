@@ -35,3 +35,17 @@ export interface IBuyer {
   //адрес покупателя
   address: string;
 }
+
+export interface IOrderRequest {
+  payment: TPayment;
+  email: string;
+  phone: string;
+  address: string;
+  total: number;
+  items: string[];
+}
+
+export interface IOrderResponse {
+  id: string;
+  total: number;
+}
