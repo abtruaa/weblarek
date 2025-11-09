@@ -41,14 +41,9 @@ console.log("Осталось товаров в корзине после очи
 
 //Customer class
 import { Customer } from "./components/models/customer";
-import { TPayment } from "./types";
+import { IBuyer } from "./types";
 const customerModel = new Customer();
-let data: {
-  payment?: TPayment;
-  email?: string;
-  phone?: string;
-  address?: string;
-} = { payment: "card" };
+let data: Partial<IBuyer> = { payment: "card" };
 customerModel.getAllCustomerData();
 console.log("Данные покупателя получены");
 customerModel.saveCustomerData(data);

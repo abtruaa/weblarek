@@ -1,11 +1,4 @@
-import {
-  IApi,
-  IBuyer,
-  IProduct,
-  IOrderResponse,
-  IOrderRequest,
-} from "../../types";
-import { Cart } from "./cart";
+import { IApi, IProduct, IOrderResponse, IOrderRequest } from "../../types";
 export class ApiService {
   private api: IApi;
   constructor(api: IApi) {
@@ -18,17 +11,7 @@ export class ApiService {
         return response.items; // Возвращаем массив из items
       });
   }
-  sendOrder(buyer: IBuyer, cart: Cart): Promise<IOrderResponse> {
-    const products = cart.getItems();
-    const total = cart.getTotalCost();
-    const orderData: IOrderRequest = {
-      payment: buyer.payment,
-      email: buyer.email,
-      phone: buyer.phone,
-      address: buyer.address,
-      total: total,
-      items: products.map((product) => product.id),
-    };
+  sendOrder(orderData: IOrderRequest): Promise<IOrderResponse> {
     return this.api.post("/order/", orderData, "POST");
   }
 }

@@ -9,6 +9,7 @@ export interface IApi {
   ): Promise<T>;
 }
 export type TPayment = "card" | "online" | "";
+export type TBuyerErrors = Partial<Record<keyof IBuyer, string>>;
 
 export interface IProduct {
   //уникальный id продукта
@@ -36,11 +37,7 @@ export interface IBuyer {
   address: string;
 }
 
-export interface IOrderRequest {
-  payment: TPayment;
-  email: string;
-  phone: string;
-  address: string;
+export interface IOrderRequest extends IBuyer {
   total: number;
   items: string[];
 }

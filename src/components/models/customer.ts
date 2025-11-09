@@ -1,28 +1,21 @@
-import { IBuyer, TPayment } from "../../types";
+import { IBuyer, TBuyerErrors } from "../../types";
 export class Customer {
-  private customerData: {
-    payment: TPayment;
-    email: string;
-    phone: string;
-    address: string;
-  } = { payment: "", email: "", phone: "", address: "" };
+  private customerData: IBuyer = {
+    payment: "",
+    email: "",
+    phone: "",
+    address: "",
+  };
   //сохранение данных в модели
-  saveCustomerData(data: {
-    payment?: TPayment;
-    email?: string;
-    phone?: string;
-    address?: string;
-  }): void {
+  saveCustomerData(data: Partial<IBuyer>): void {
     this.customerData = { ...this.customerData, ...data };
   }
   //получение всех данных покупателя
-  getAllCustomerData(): IBuyer | null {
+  getAllCustomerData(): IBuyer {
     if (!this.customerData) {
       console.log("Данные покупателя еще не были сохранены");
-      return null;
-    } else {
-      return { ...this.customerData };
     }
+    return { ...this.customerData };
   }
   //очистка данных покупателя
   clearCustomerData(): void {
@@ -30,27 +23,26 @@ export class Customer {
     console.log("Данные покупателя удалены.");
   }
   //валидация данных покупателя
-  validateCustomerData(): { [key: string]: string } {
-    const data = this.customerData;
+  validateCustomerData(): TBuyerErrors {
     const errors: { [key: string]: string } = {};
     // Валидация способа оплаты
-    const validPaymentMethods = ["card", "online", ""];
-    if (!validPaymentMethods.includes(data.payment)) {
+    const validPaymentMethods = ["card", "online"];
+    if (!validPaymentMethods.includes(this.customerData.payment)) {
       errors.payment = `Не выбран способ оплаты.`;
     }
 
     // Валидация адреса
-    if (data.address.trim() === "") {
+    if (this.customerData.address.trim() === "") {
       errors.address = "Не указан адрес доставки.";
     }
 
     // Валидация email и телефона
-    if (data.email.trim() === "") {
+    if (this.customerData.email.trim() === "") {
       errors.email = "Не указана почта.";
     }
 
     // Валидация телефона
-    if (data.phone.trim() === "") {
+    if (this.customerData.phone.trim() === "") {
       errors.phone = "Не указан телефон.";
     }
     return errors;
