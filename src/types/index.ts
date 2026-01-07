@@ -1,17 +1,15 @@
-export type ApiPostMethods = "POST" | "PUT" | "DELETE";
-
-export interface IApi {
-  get<T extends object>(uri: string): Promise<T>;
-  post<T extends object>(
-    uri: string,
-    data: object,
-    method?: ApiPostMethods
-  ): Promise<T>;
-}
+// import { ApiPostMethods } from "../components/base/Api";
+// export interface IApi {
+//   get<T extends object>(uri: string): Promise<T>;
+//   post<T extends object>(
+//     uri: string,
+//     data: object,
+//     method?: ApiPostMethods
+//   ): Promise<T>;
+// }
 export type TPayment = "card" | "online" | "";
-export type TBuyerErrors = Partial<Record<keyof IBuyer, string>>;
 
-export interface IProduct {
+export interface IItem {
   //уникальный id продукта
   id: string;
   //описание продукта
@@ -28,7 +26,7 @@ export interface IProduct {
 
 export interface IBuyer {
   //способ оплаты
-  payment: TPayment;
+  payment: string;
   //почта покупателя
   email: string;
   //номер покупателя
@@ -37,12 +35,18 @@ export interface IBuyer {
   address: string;
 }
 
-export interface IOrderRequest extends IBuyer {
+export interface IOrder extends IBuyer {
   total: number;
   items: string[];
 }
 
-export interface IOrderResponse {
+export interface IOrderResult {
   id: string;
   total: number;
 }
+
+export interface IItemView extends IItem {
+  index: number;
+  itemButton: boolean;
+}
+export type FormErrors = Partial<Record<keyof IBuyer, string>>;

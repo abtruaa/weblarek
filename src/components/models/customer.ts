@@ -1,4 +1,5 @@
-import { IBuyer, TBuyerErrors } from "../../types";
+import { IBuyer, FormErrors } from "../../types";
+import { IEvents } from "../base/Events";
 export class Customer {
   private customerData: IBuyer = {
     payment: "",
@@ -6,9 +7,25 @@ export class Customer {
     phone: "",
     address: "",
   };
+  protected formErrors: FormErrors = {};
+  protected events: IEvents;
+
+  constructor(events: IEvents) {
+    this.events = events;
+  }
+
+  setOrderField(field: keyof IBuyer, value: string): void {
+    this.customerData[field] = value;
+    this.events.emit("order:change");
+    if (this.validateCustomerData()) {
+      this.events.emit("order:ready", this.customerData);
+    }
+  }
+
   //сохранение данных в модели
   saveCustomerData(data: Partial<IBuyer>): void {
     this.customerData = { ...this.customerData, ...data };
+    this.events.emit("customer:updated", this.customerData);
   }
   //получение всех данных покупателя
   getAllCustomerData(): IBuyer {
@@ -23,8 +40,8 @@ export class Customer {
     console.log("Данные покупателя удалены.");
   }
   //валидация данных покупателя
-  validateCustomerData(): TBuyerErrors {
-    const errors: { [key: string]: string } = {};
+  validateCustomerData() {
+    const errors: typeof this.formErrors = {};
     // Валидация способа оплаты
     const validPaymentMethods = ["card", "online"];
     if (!validPaymentMethods.includes(this.customerData.payment)) {
@@ -45,6 +62,8 @@ export class Customer {
     if (this.customerData.phone.trim() === "") {
       errors.phone = "Не указан телефон.";
     }
-    return errors;
+    this.formErrors = errors;
+    this.events.emit("formErrors:change", this.formErrors);
+    return Object.keys(errors).length === 0;
   }
 }
