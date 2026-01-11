@@ -10,11 +10,6 @@ export class Cart {
     this.events = events;
   }
 
-  setAllItems(items: IItem[]) {
-    this.items = items;
-    this.events.emit("basket:setAllItems");
-  }
-
   getItems(): IItem[] {
     return this.items;
   }
@@ -56,11 +51,8 @@ export class Cart {
   itemIsInCart(id: string): boolean {
     return this.items.some((item) => item.id === id);
   }
-  // private emitCartUpdated(): void {
-  //   this.events.emit("cart:updated", {
-  //     items: this.items,
-  //     total: this.getTotalCost(),
-  //     count: this.getTotalAmount(),
-  //   });
-  // }
+
+  getItemById(id: string): IItem | undefined {
+    return this.items.find(item => item.id === id);
+  }
 }

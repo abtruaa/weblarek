@@ -13,7 +13,7 @@ export class Success extends Component<ISuccess> {
   protected close: HTMLElement;
   protected _total: HTMLElement;
 
-  constructor(protected container: HTMLElement, action?: ISuccessActions) {
+  constructor(container: HTMLElement, action?: ISuccessActions) {
     super(container);
 
     this.close = ensureElement(".order-success__close", this.container);

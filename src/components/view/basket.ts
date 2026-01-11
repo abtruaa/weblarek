@@ -4,7 +4,7 @@ import { IEvents } from "../base/Events";
 
 export interface IBasket {
   items: HTMLElement[];
-  fullPrice: number;
+  total: number;
 }
 
 export class Basket extends Component<IBasket> {
@@ -44,7 +44,7 @@ export class Basket extends Component<IBasket> {
     }
   }
 
-  set fullPrice(value: number) {
+  set total(value: number) {
     this.basketPrice.textContent = `${value} синапсов`;
     this.basketButton.disabled = value === 0;
   }

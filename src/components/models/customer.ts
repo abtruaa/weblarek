@@ -14,56 +14,100 @@ export class Customer {
     this.events = events;
   }
 
-  setOrderField(field: keyof IBuyer, value: string): void {
-    this.customerData[field] = value;
-    this.events.emit("order:change");
-    if (this.validateCustomerData()) {
-      this.events.emit("order:ready", this.customerData);
-    }
-  }
-
   //сохранение данных в модели
   saveCustomerData(data: Partial<IBuyer>): void {
     this.customerData = { ...this.customerData, ...data };
-    this.events.emit("customer:updated", this.customerData);
+    this.checkValidity();
+    this.events.emit("customer:changed", this.customerData);
   }
+  
   //получение всех данных покупателя
   getAllCustomerData(): IBuyer {
-    if (!this.customerData) {
-      console.log("Данные покупателя еще не были сохранены");
-    }
     return { ...this.customerData };
   }
+  
   //очистка данных покупателя
   clearCustomerData(): void {
     this.customerData = { payment: "", email: "", phone: "", address: "" };
-    console.log("Данные покупателя удалены.");
+    this.formErrors = {};
+    this.events.emit("customer:changed", this.customerData);
+    this.events.emit("formErrors:change", {});
   }
-  //валидация данных покупателя
-  validateCustomerData() {
-    const errors: typeof this.formErrors = {};
-    // Валидация способа оплаты
-    const validPaymentMethods = ["card", "online"];
-    if (!validPaymentMethods.includes(this.customerData.payment)) {
-      errors.payment = `Не выбран способ оплаты.`;
-    }
+  
+  setOrderField(field: keyof IBuyer, value: string): void {
+    this.customerData[field] = value.trim();    
+    this.checkValidity();
+}
 
-    // Валидация адреса
-    if (this.customerData.address.trim() === "") {
-      errors.address = "Не указан адрес доставки.";
-    }
-
-    // Валидация email и телефона
-    if (this.customerData.email.trim() === "") {
-      errors.email = "Не указана почта.";
-    }
-
-    // Валидация телефона
-    if (this.customerData.phone.trim() === "") {
-      errors.phone = "Не указан телефон.";
-    }
-    this.formErrors = errors;
+private checkValidity(): void {
+    // Разделяем ошибки по формам
+    const orderErrors = this.validateOrderForm();
+    const contactErrors = this.validateContactForm();
+    this.formErrors = { ...orderErrors, ...contactErrors };
+        
     this.events.emit("formErrors:change", this.formErrors);
+    this.events.emit("order:validation", { 
+        isValid: Object.keys(orderErrors).length === 0 
+    });
+    this.events.emit("contacts:validation", { 
+        isValid: Object.keys(contactErrors).length === 0 
+    });
+}
+  
+  validateOrderForm(): FormErrors {
+    const errors: FormErrors = {};    
+    const payment = this.customerData.payment.trim();
+    const address = this.customerData.address.trim();
+    
+    const validPaymentMethods = ["card", "cash"];
+    
+    
+    if (!validPaymentMethods.includes(payment)) {
+        errors.payment = `Не выбран способ оплаты.`;
+    }
+
+    if (address === "") {
+        errors.address = "Не указан адрес доставки.";
+    }
+    return errors;
+  }
+  
+  validateContactForm(): FormErrors {
+    const errors: FormErrors = {};    
+    const email = this.customerData.email.trim();
+    const phone = this.customerData.phone.trim();
+        
+    if (email === "") {
+        errors.email = "Не указана почта.";
+    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+        errors.email = "Некорректный формат email.";
+    }
+
+    if (phone === "") {
+        errors.phone = "Не указан телефон.";
+    }
+    return errors;
+  }
+  
+  isOrderFormValid(): boolean {
+    const errors = this.validateOrderForm();
     return Object.keys(errors).length === 0;
+  }
+  
+  isContactsFormValid(): boolean {
+    const errors = this.validateContactForm();
+    return Object.keys(errors).length === 0;
+  }
+  
+  validateCustomerData(): boolean {
+    const orderErrors = this.validateOrderForm();
+    const contactErrors = this.validateContactForm();
+    return Object.keys(orderErrors).length === 0 && 
+           Object.keys(contactErrors).length === 0;
+  }
+  
+  // Метод для получения ошибок
+  getErrors(): FormErrors {
+    return { ...this.formErrors };
   }
 }

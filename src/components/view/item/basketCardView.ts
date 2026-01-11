@@ -1,26 +1,27 @@
-import { Item } from './cardItem';
-import { ensureElement } from '../../../utils/utils';
-import { IEvents } from '../../base/Events';
-import { IAction } from './cardItem';
+import { Item } from "./cardItem";
+import { ensureElement } from "../../../utils/utils";
+import { IEvents } from "../../base/Events";
 export class BasketItem extends Item {
-    protected _index: HTMLElement;
-    protected buttonDelete: HTMLButtonElement;
+  protected _index: HTMLElement;
+  protected buttonDelete: HTMLButtonElement;
 
-    constructor(
-        protected container: HTMLElement,
-        protected events?: IEvents,
-        action?: IAction
-    ) {
-        super(container, events, action);
-        this._index = ensureElement('.basket__item-index', this.container);
-        this.buttonDelete = ensureElement<HTMLButtonElement>('.basket__item-delete', this.container);
+  constructor(container: HTMLElement, protected events: IEvents) {
+    super(container, events);
+    this._index = ensureElement(".basket__item-index", this.container);
+    this.buttonDelete = ensureElement<HTMLButtonElement>(
+      ".basket__item-delete",
+      this.container
+    );
+        
+    this.buttonDelete.addEventListener("click", (event: MouseEvent) => {
+      event.stopPropagation();      
+      if (this.id) {
+        this.events.emit("basket:remove", { id: this.id });
+      }
+    });
+  }
 
-        if (this.buttonDelete && action?.onClick) {
-            this.buttonDelete.addEventListener('click', action.onClick);
-        }
-    }
-
-    set index(value: number) {
-        this._index.textContent = String(value);
-    }
+  set index(value: number) {
+    this._index.textContent = String(value);
+  }
 }

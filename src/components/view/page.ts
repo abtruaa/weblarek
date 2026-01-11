@@ -14,7 +14,7 @@ export class Page extends Component<IPage> {
   protected itemContainer: HTMLElement;
   protected wrapper: HTMLElement;
 
-  constructor(protected container: HTMLElement, protected events: IEvents) {
+  constructor(container: HTMLElement, protected events: IEvents) {
     super(container);
     this.headerBasketButton = ensureElement<HTMLButtonElement>(
       ".header__basket",
