@@ -1,4 +1,4 @@
-import { createElement, ensureElement } from "../../utils/utils";
+import { ensureElement } from "../../utils/utils";
 import { Component } from "../base/Component";
 import { IEvents } from "../base/Events";
 
@@ -35,11 +35,7 @@ export class Basket extends Component<IBasket> {
       this.basketList.replaceChildren(...items);
       this.basketButton.disabled = false;
     } else {
-      this.basketList.replaceChildren(
-        createElement<HTMLParagraphElement>("p", {
-          textContent: "Корзина пуста",
-        })
-      );
+      this.basketList.replaceChildren();
       this.basketButton.disabled = true;
     }
   }

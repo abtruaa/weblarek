@@ -2,8 +2,8 @@ import { IItem } from "../../types";
 import { IEvents } from "../base/Events";
 export class Products {
   private allProducts: IItem[] = [];
+  private selectedProduct: IItem | null = null;
   protected events: IEvents;
-  preview: IItem | undefined;
 
   constructor(events: IEvents) {
     this.events = events;
@@ -19,13 +19,20 @@ export class Products {
   getProducts(): IItem[] {
     return this.allProducts;
   }
+
   //получение одного товара по его id
   getProductById(id: string): IItem | undefined {
     return this.allProducts.find((product) => product.id === id);
   }
-  //
-  setPreview(item: IItem) {
-    this.preview = item;
-    this.events.emit("preview:changed", item);
+  
+  // установка выбранного товара
+  setSelected(item: IItem): void {
+    this.selectedProduct = item;
+    this.events.emit("preview:open");
+  }
+  
+  // получение выбранного товара
+  getSelected(): IItem | null {
+    return this.selectedProduct;
   }
 }

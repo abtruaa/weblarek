@@ -1,42 +1,29 @@
-import { Item } from "./cardItem";
+import { Item, IAction } from "./cardItem";
 import { ensureElement } from "../../../utils/utils";
-import { IEvents } from "../../base/Events";
 
 export class ItemElement extends Item {
   protected itemImage: HTMLImageElement;
   protected itemCategory: HTMLElement;
-  protected button: HTMLButtonElement;
   protected itemCategoryColor: Record<string, string> = {
-    другое: "card__category_other",
+    "другое": "card__category_other",
     "софт-скил": "card__category_soft",
-    дополнительное: "card__category_additional",
-    кнопка: "card__category_button",
+    "дополнительное": "card__category_additional",
+    "кнопка": "card__category_button",
     "хард-скил": "card__category_hard",
   };
 
-  constructor(container: HTMLElement, protected events: IEvents) {
-    super(container, events);
+  constructor(container: HTMLElement, actions?: IAction) {
+    super(container, actions);
     this.itemImage = ensureElement<HTMLImageElement>(
       ".card__image",
       this.container
     );
     this.itemCategory = ensureElement(".card__category", this.container);
-    this.button = this.container as HTMLButtonElement;
-        
-    // Используем this.id (геттер) вместо dataset
-    this.button.addEventListener("click", (event: MouseEvent) => {
-      event.preventDefault();      
-      if (this.id) {
-        this.events.emit("card:select", { id: this.id });
-      } else {
-        console.error("No id in ItemElement!");
-      }
-    });
   }
 
   set image(value: string) {
     this.itemImage.src = value;
-    this.itemImage.alt = this.title; // Используем геттер title
+    this.itemImage.alt = this.itemTitle.textContent;
   }
 
   set category(value: string) {
